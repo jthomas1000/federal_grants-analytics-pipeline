@@ -1,0 +1,35 @@
+# --- Secrets: never commit these ---
+.env
+.env.airflow
+client_secret*.json
+token.json
+ca.pem
+*.pem
+
+# --- Real data: large / not meant for git history ---
+data/*.csv
+!data/.gitkeep
+
+# --- Python ---
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+
+# --- Airflow (Docker Compose local setup) ---
+logs/
+plugins/
+config/airflow.cfg
+docker-compose.yaml
+edit_compose.py
+
+# --- Misc local artifacts from testing ---
+backfill_output.txt
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,4 +1,4 @@
-# Marketing Analytics Pipeline
+# Federal Grants Analytics Pipeline
 
 A daily pipeline that pulls real GA4 traffic data (Google Merchandise
 Store demo account), loads the real Federal Grants and Funding

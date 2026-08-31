@@ -6,19 +6,19 @@ Opportunities dataset (grants.gov-sourced, standing in for a CRM's deals),
 generates realistic synthetic social media data, normalizes all three
 into one schema, and loads it into Postgres for a Power BI dashboard.
 
+**Companion notebook:** a simplified, standalone version of the CRM
+(grants) normalization leg, with exploratory charts, is published on
+Kaggle: https://www.kaggle.com/code/justinthomas100/federal-grants-crm-leg-normalization-companion-no
+
 **Data source note:** genuinely real, row-level, recent (2023–2026)
 commercial sales/CRM data doesn't really exist publicly — companies don't
 publish that. The Federal Grants dataset is a real substitute: real
 agencies, real award amounts, real close dates, just federal funding
 instead of commercial sales. The synthetic social data is clearly labeled
-as such rather than dressed up as real. Being upfront about this in your
-portfolio write-up (see `power_bi/CONNECTING.md`, section 4) is itself a
-good signal — it shows you understand data provenance, not just pipelines.
+as such rather than dressed up as real (see `power_bi/CONNECTING.md`,
+section 4, for more on data provenance).
 
-## Portfolio Reasoning
-
-It's a small pipeline, but it touches the same problems a real data
-engineering role does:
+## Design notes
 
 - **Two different auth/access models.** GA4 uses OAuth2 (a refresh token
   you get once via a browser login). The grants leg is a static file pull
@@ -156,32 +156,31 @@ airflow standalone   # spins up a local Airflow with a web UI
 Because the grants CSV is historical, the daily schedule will mostly find
 zero new grants closing on "today's" date — that's expected, not a bug
 (see the comment at the top of `dags/marketing_pipeline_dag.py`). To
-actually populate history for a demo, loop `_extract_grants`-equivalent
-calls over the CSV's real date range instead of relying on daily runs.
+actually populate history, run a backfill over the CSV's real date range
+instead of relying on daily runs:
+```bash
+airflow backfill create --dag-id marketing_analytics_pipeline \
+  --from-date 2023-01-01 --to-date 2023-02-01
+```
+(`--to-date` is exclusive, so add one day past the last date you want.)
 
 ### 8. Connect Power BI
 See `power_bi/CONNECTING.md`.
 
-## Suggested directions to extend this (good for a "future work" section)
+## Possible extensions
 
-- **Add a backfill script.** Loop over the grants CSV's actual date range
-  (2004–2024) and call `fetch_grant_opportunities` + the normalize/load
-  steps directly, bypassing Airflow's daily-run assumption — this is the
-  most natural "next thing to build" given the historical-data quirk above.
-- **Add Great Expectations or pandera** for schema/data-quality checks
-  between the normalize and load steps — shows you know testing goes
-  beyond `pytest` in a data pipeline.
-- **Containerize it.** A `docker-compose.yml` with Postgres + Airflow is
-  a very common ask in interviews and makes the whole thing runnable
-  with one command for anyone reviewing your portfolio.
-- **CI with GitHub Actions.** A workflow that runs `pytest` on every push
-  is a small addition that signals real engineering practice.
-- **A Streamlit alternative dashboard.** If you want something you can
-  link to directly (rather than a Power BI file people have to open
-  locally), a small Streamlit app reading from the same Postgres views
-  is a quick way to make the project demoable from a browser.
-- **Swap the social leg for something real too.** If you get access to a
-  page you manage (Meta/YouTube/Reddit), replacing
-  `generate_synthetic_social.py` with a real API call would make all
-  three legs genuinely real — worth doing last, since it's the lowest-risk
-  swap given the normalize/load/DAG code doesn't need to change either way.
+- **A backfill script wrapper.** The manual `airflow backfill create`
+  command above works, but a small script around it (with sensible
+  defaults for the grants CSV's real date range) would make repeated
+  demos or re-runs less error-prone.
+- **Data-quality checks between normalize and load.** Something like
+  Great Expectations or pandera would catch schema drift earlier and
+  more explicitly than the current alias-lookup + `KeyError` approach.
+- **A lighter-weight dashboard alternative.** A small Streamlit app
+  reading from the same Postgres views would make the project viewable
+  in a browser without requiring Power BI Desktop.
+- **Replace the social leg with a real API.** If access to a real
+  Meta/YouTube/Reddit page becomes available, swapping
+  `generate_synthetic_social.py` for a real API call would make all
+  three legs genuinely real — the normalize/load/DAG code doesn't need
+  to change either way.

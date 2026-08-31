@@ -15,7 +15,7 @@ as such rather than dressed up as real. Being upfront about this in your
 portfolio write-up (see `power_bi/CONNECTING.md`, section 4) is itself a
 good signal — it shows you understand data provenance, not just pipelines.
 
-## Why this project is worth putting in a portfolio
+## Portfolio Reasoning
 
 It's a small pipeline, but it touches the same problems a real data
 engineering role does:

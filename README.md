@@ -11,12 +11,10 @@ into one schema, and loads it into Postgres for a Power BI dashboard.
 Kaggle: https://www.kaggle.com/code/justinthomas100/federal-grants-crm-leg-normalization-companion-no
 
 **Data source note:** genuinely real, row-level, recent (2023–2026)
-commercial sales/CRM data doesn't really exist publicly — companies don't
-publish that. The Federal Grants dataset is a real substitute: real
+commercial sales/CRM data doesn't really exist publicly. The Federal Grants dataset is a real substitute: real
 agencies, real award amounts, real close dates, just federal funding
 instead of commercial sales. The synthetic social data is clearly labeled
-as such rather than dressed up as real (see `power_bi/CONNECTING.md`,
-section 4, for more on data provenance).
+as such rather than dressed up as real .
 
 ## Design notes
 

@@ -16,6 +16,29 @@ agencies, real award amounts, real close dates, just federal funding
 instead of commercial sales. The synthetic social data is clearly labeled
 as such rather than dressed up as real .
 
+## Output screenshots
+
+Captured on September 27, 2026 against a local Postgres 16 database. The
+grants leg used the grants.gov opportunities export (TidyTuesday 2023-10-03
+mirror, with `award_ceiling` joined in from its details table), and the GA4
+leg was skipped because it needs a personal OAuth token.
+
+**Test suite**
+
+![pytest: 15 tests passed](screenshots/pytest_results.png)
+
+**Manual pipeline run (Setup step 6), loaded twice to show idempotent upserts**
+
+![Pipeline run: extract, normalize, load, re-run](screenshots/pipeline_run.png)
+
+**What landed in `fact_marketing_metrics`**
+
+![psql query of fact_marketing_metrics grouped by source and metric](screenshots/postgres_fact_table.png)
+
+**Power BI view preview: `vw_channel_award_amount`**
+
+![Top 10 agencies by 2024 award ceiling](screenshots/award_amount_by_agency.png)
+
 ## Design notes
 
 - **Two different auth/access models.** GA4 uses OAuth2 (a refresh token
